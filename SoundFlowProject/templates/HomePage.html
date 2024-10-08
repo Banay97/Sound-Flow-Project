@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #D8BFD8;
+            margin: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: flex-end; 
+            margin-bottom: 20px;
+        }
+        
+        a {
+            margin: 0 15px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            background-color: #800080;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        a:hover {
+            background-color: #662d91;
+        }
+        
+        button {
+            margin: 0 15px; 
+            padding: 10px 20px; 
+            background-color: #800080; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s; 
+        }
+        
+        button:hover {
+            background-color: #662d91;
+        }
+        
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        thead {
+            background-color: #800080;
+            color: white;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+        
+        tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        tfoot {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        
+        tfoot td {
+            text-align: center;
+            padding: 10px;
+        }
+        
+        a#show-title {
+            background-color: transparent; 
+            color: ##800080; 
+            text-decoration: none; 
+            transition: color 0.3s; 
+        }
+        
+        a#show-title:hover {
+            text-decoration: underline; 
+            color: #0056b3;
+        }
+        
+    </style>
+</head>
+<body>
+    <h1>Welcome,  {{user.first_name}} {{user.last_name}}</h1>
+    <div class="nav">
+        <a href="{%url 'book_session'%}">+Create</a>
+        <form method="post" action="{% url 'sign_out' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Sign Out</button>
+        </form>
+        
+        
+    </div>
+    
+    <hr>
+
+    <h1>Booked Recoding Sessions:</h1>
+    <table>
+        <thead>
+            <tr>
+                <td>Session Main details</td>
+                <td> Session Extra Details</td>
+                <td>Session Like Details</td>
+                <td>More</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in sessions %}
+            <tr>
+                <td>{{session.created_at}} {{session.artist_name}}</a></td>
+                <td>Duration: {{session.duration}} <br>Engineer: {{session.created_by.first_name}}<br> Genre: {{session.genre}}
+                </td>
+                <td><a href="{% url 'session_details_page' session.id %}" style="background-color: #4B0082;">Details</a></td>
+                <td>
+                    {% if user and session.created_by.id == user.id %}
+                        <a href="{%url 'update_session' session.id%}" style="background-color: #4B0082;">Edit</a> |
+                        <form method="post" action="{%url 'delete_session' session.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" style="background-color: red; color: white; border: none; cursor: pointer;">Delete</button>
+                        </form>
+                    {% else %}
+                        <a href="{%url 'update_session' session.id%}" style="background-color: #4B0082;">Edit</a>
+                        
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4">Sessions Details Table</td>
+            </tr>
+        </tfoot>
+    </table>
+
+</body>
+</html>

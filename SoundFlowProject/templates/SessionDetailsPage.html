@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #D8BFD8;
+            margin: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: flex-end; 
+            margin-bottom: 20px;
+        }
+        
+        a {
+            margin: 0 15px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            background-color: #800080;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        a:hover {
+            background-color: #662d91;
+        }
+        
+        button {
+            margin: 0 15px; 
+            padding: 10px 20px; 
+            background-color: #800080; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s; 
+        }
+        
+        button:hover {
+            background-color: #662d91;
+        }
+        
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+        
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px; /* Space between card and other elements */
+        }
+
+        h3 {
+            color: black;
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical; 
+        }
+        .messages {
+            color: red;
+            margin-top: 10px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Welcome,  {{user.first_name}} {{user.last_name}}</h1>
+    <div class="nav">
+        <a href="{% url 'home_page' %}">Dashboard</a>
+        <form method="post" action="{% url 'sign_out' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Sign Out</button>
+        </form>
+    </div>
+    
+    <hr>
+    <h1>{{session.artist_name}}</h1>
+
+    <h3>Engineer: {{ session.created_by.first_name }} {{ session.created_by.last_name }}</h3>
+    <h4>Session Details</h4>
+    <div class="card">
+        <form method= "post" action ="#">
+            {%csrf_token%}
+
+            <label for="session_date">Date:</label>
+            <p name="session_date">{{session.session_date}}</p>
+
+            <label for="duration">Duration:</label>
+            <p name="duration">{{session.duration}}</p>
+
+            <label for="genre">Genre:</label>
+            <p name="genre">{{session.genre}}</p>
+            
+            <label for="notes">Notes:</label>
+            <p name="notes">{{session.notes}}</p>
+
+        </form>
+    </div>
+    <div class="card">
+        <form method= "post" action ="#">
+            {%csrf_token%}
+            
+            <h3> Support Enginner:</h3>
+            {% if session.supported_engineer.id == user.id %}
+            <ul>
+                <li>{{session.supported_engineer.fisrt_name}} {{session.supported_engineer.last_name}}</li>
+            </ul>
+            <button type="submit" >Re-assign to You</button>
+            {% else %}
+            <select name="first_name" id="first_name">
+                <option value="">Choose a Supported Engineer</option>
+                {%for user in users%}
+                <option value="first_name">{{user.first_name}} {{user.last_name}}</option>
+
+            {%endfor%}
+            </select>
+            <button type="submit" >Assign</button>
+            {%endif%}
+
+        </form>
+    </div>
+    
+    
+</body>
+</html>
